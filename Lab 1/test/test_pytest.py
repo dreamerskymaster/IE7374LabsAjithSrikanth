@@ -1,5 +1,5 @@
 import pytest
-from src.calculator import fun1, fun2, fun3, fun4
+from src.calculator import fun1, fun2, fun3, fun4, fun_power, fun_sqrt, fun_avg
 
 def test_fun1():
     assert fun1(1, 2) == 3
@@ -16,3 +16,17 @@ def test_fun3():
 def test_fun4():
     # fun1(2,3)=5, fun2(2,3)=-1, fun3(2,3)=6. Sum = 10
     assert fun4(2, 3) == 10
+
+def test_fun_power():
+    assert fun_power(2, 3) == 8
+    assert fun_power(5, 0) == 1
+
+def test_fun_sqrt():
+    assert fun_sqrt(16) == 4
+    assert fun_sqrt(0) == 0
+    with pytest.raises(ValueError):
+        fun_sqrt(-1)
+
+def test_fun_avg():
+    assert fun_avg([1, 2, 3, 4, 5]) == 3
+    assert fun_avg([]) == 0
