@@ -23,3 +23,9 @@ This repository contains the laboratory assignments for the IE7374 MLOps course.
   - Premium Streamlit dashboard for real-time interaction.
   - Comprehensive documentation and self-explanatory code.
 
+- **[Lab 2 Proxy: Standalone Cloud Version](./Lab%202%20Proxy)**
+  - Optimized for **Streamlit Cloud** deployment.
+  - Unified architecture (Frontend + Model in one app).
+  - Bypasses local backend requirements for instant hosting.
+
+
