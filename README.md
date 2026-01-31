@@ -12,8 +12,14 @@ This repository contains the laboratory assignments for the IE7374 MLOps course.
 
 ### Labs
 - **[Lab 1: Foundation - Calculator & CI/CD](./Lab%201)**
-  - Virtual Environment setup
-  - Python project structure
-  - Core logic implementation
-  - Pytest & Unittest implementation
-  - GitHub Actions Automation
+  - Virtual Environment setup & project architecture.
+  - Mathematical core logic with custom enhancements.
+  - Dual-framework testing (Pytest & Unittest).
+  - Advanced GitHub Actions workflows (v4/v5).
+
+- **[Lab 2: Integration - Streamlit & FastAPI](./Lab%202)**
+  - Iris Flower classification model (Random Forest).
+  - Robust FastAPI backend serving predictions.
+  - Premium Streamlit dashboard for real-time interaction.
+  - Comprehensive documentation and self-explanatory code.
+
