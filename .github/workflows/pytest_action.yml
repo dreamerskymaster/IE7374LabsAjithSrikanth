@@ -23,10 +23,9 @@ jobs:
     - name: Run Tests and Generate XML Report
       run: |
         export PYTHONPATH=$PYTHONPATH:$(pwd)/"Lab 1"
-        pytest --junitxml=pytest-report.xml "Lab 1/test/test_pytest.py"
-      continue-on-error: false
+        python -m pytest --junitxml=pytest-report.xml "Lab 1/test/test_pytest.py"
     - name: Upload Test Results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: test-results
         path: pytest-report.xml
