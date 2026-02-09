@@ -53,7 +53,7 @@ st.title("🌸 Iris Flower species classification")
 
 # Display a banner image for a more visual experience
 try:
-    st.image("Lab 2/frontend/assets/dashboard.png", use_container_width=True, caption="Botanical Exploration System Interface")
+    st.image("Lab 2/frontend/assets/dashboard.png", width='stretch', caption="Botanical Exploration System Interface")
 except:
     pass
 
