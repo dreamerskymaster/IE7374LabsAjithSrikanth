@@ -16,23 +16,46 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS for a more premium look
+# Custom CSS for a more premium, high-fidelity look
 st.markdown("""
     <style>
-    .main {
-        background-color: #f5f7f9;
+    /* Gradient background for the entire app */
+    .stApp {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     }
+    
+    /* Elegant button styling */
     .stButton>button {
         width: 100%;
-        border-radius: 5px;
-        height: 3em;
-        background-color: #4CAF50;
+        border-radius: 12px;
+        height: 3.5em;
+        background: linear-gradient(90deg, #4CAF50, #45a049);
         color: white;
+        font-weight: bold;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    .status-box {
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 20px;
+    
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        background: linear-gradient(90deg, #45a049, #4CAF50);
+    }
+
+    /* Sidebar sophistication */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff;
+        border-right: 1px solid #dee2e6;
+    }
+
+    /* Card-like containers for inputs */
+    div.stSlider {
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -99,7 +122,7 @@ def perform_prediction(features, model=None):
     return None, None
 
 # --- dashboard Header ---
-st.title("🌸 Iris Flower species classification")
+st.title("🌿 🌸 Iris Botanical Prediction & Exploration 🌸 🌿")
 
 # Display a banner image for a more visual experience
 try:
@@ -108,8 +131,9 @@ except:
     pass
 
 st.markdown("""
-Welcome to the **IE7374 MLOps Iris Prediction Dashboard**. 
-This application interfaces with a FastAPI backend serving a Random Forest model trained on morphological flower data.
+### ✨ Welcome to the Professional Artificial Intelligence Botanical Interface! ✨
+This application bridges the gap between **Machine Learning** and **Botanical Science** 🧪🔬. 
+Using a highly-trained Random Forest architecture, we can identify Iris species with incredible precision 🎯.
 """)
 
 # --- Sidebar: System Status & Input controls ---
@@ -130,8 +154,8 @@ with st.sidebar:
         st.info("Ensure the FastAPI server is running on port 8000.")
 
     st.divider()
-    st.subheader("Input Method")
-    input_mode = st.radio("Choose interaction style:", ["Manual Sliders", "Bulk JSON Upload"])
+    st.subheader("📥 Input Method Selection")
+    input_mode = st.radio("Choose interaction style:", ["Slider Manipulation 🎚️", "Bulk Data Upload 📂"])
 
 # --- Main Interaction Area ---
 if input_mode == "Manual Sliders":
@@ -154,12 +178,9 @@ if input_mode == "Manual Sliders":
             
             if prediction:
                 st.balloons()
-                st.success(f"### Prediction Result: **{prediction}**")
-                st.caption(f"Processed via: {provider} Engine")
-                try:
-                    st.image("Lab 2 Proxy/frontend/assets/st_sucess.png", width=200)
-                except:
-                    pass
+                st.success(f"### 🎉 Result Identified: **{prediction}**")
+                st.caption(f"🛡️ Security Logic: Processed via {provider} Engine")
+                # Removed st_sucess.png asset display as requested
             else:
                 st.error("Prediction failed: Backend unreachable and local model missing.")
 
@@ -199,4 +220,4 @@ else:
 
 # --- Footer ---
 st.divider()
-st.caption("Developed by Ajith Srikanth | IE7374 MLOps | Professor Ramin | Northeastern University")
+st.caption("✨ Developed with excellence by **Ajith Srikanth** | IE7374 MLOps 🎓 | Professor Ramin | Northeastern University 🐾")
