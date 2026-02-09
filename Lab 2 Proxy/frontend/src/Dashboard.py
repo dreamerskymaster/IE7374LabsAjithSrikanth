@@ -163,7 +163,7 @@ with st.sidebar:
     input_mode = st.radio("Choose interaction style:", ["Slider Manipulation 🎚️", "Bulk Data Upload 📂"])
 
 # --- Main Interaction Area ---
-if input_mode == "Manual Sliders":
+if "Slider Manipulation" in input_mode:
     st.subheader("🔢 Manual Feature entry")
     col1, col2 = st.columns(2)
     
