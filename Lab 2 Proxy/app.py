@@ -69,6 +69,12 @@ def perform_inference(model, input_data):
 st.title("🌸 Iris species Prediction Hub")
 st.caption("A standalone, cloud-optimized deployment for IE7374 MLOps Lab 2.")
 
+# Display a banner image for a more visual experience
+try:
+    st.image("dashboard.png", use_container_width=True, caption="Botanical Exploration System Interface (Cloud Edition)")
+except:
+    pass
+
 # Pre-load the model for efficiency
 model = load_prediction_model()
 
@@ -102,6 +108,10 @@ if model:
                     <h1 style='color: #4CAF50;'>{result}</h1>
                 </div>
             """, unsafe_allow_html=True)
+            try:
+                st.image("st_sucess.png", width=150)
+            except:
+                pass
 
     with tab2:
         st.subheader("Batch JSON processing")

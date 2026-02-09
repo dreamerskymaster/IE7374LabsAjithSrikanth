@@ -50,6 +50,13 @@ def check_backend_status():
 
 # --- dashboard Header ---
 st.title("🌸 Iris Flower species classification")
+
+# Display a banner image for a more visual experience
+try:
+    st.image("Lab 2/frontend/assets/dashboard.png", use_container_width=True, caption="Botanical Exploration System Interface")
+except:
+    pass
+
 st.markdown("""
 Welcome to the **IE7374 MLOps Iris Prediction Dashboard**. 
 This application interfaces with a FastAPI backend serving a Random Forest model trained on morphological flower data.
@@ -99,7 +106,13 @@ if input_mode == "Manual Sliders":
                 if response.status_code == 200:
                     prediction = response.json().get("prediction")
                     st.balloons()
-                    st.success(f"### Result: **{prediction}**")
+                    
+                    # Visually pleasing result presentation
+                    st.success(f"### Prediction Result: **{prediction}**")
+                    try:
+                        st.image("Lab 2/frontend/assets/st_sucess.png", width=200)
+                    except:
+                        pass
                 else:
                     st.error(f"Prediction Error: {response.text}")
         else:
