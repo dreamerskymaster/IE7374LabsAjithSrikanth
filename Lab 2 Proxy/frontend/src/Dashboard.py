@@ -16,46 +16,51 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS for a more premium, high-fidelity look
+# Custom CSS for a professional 'Dim' Slate theme (High Contrast)
 st.markdown("""
     <style>
-    /* Gradient background for the entire app */
+    /* Slate-based dark theme for maximum visibility */
     .stApp {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        background-color: #0e1117;
+        color: #ffffff;
     }
     
-    /* Elegant button styling */
+    /* Sidebar integration */
+    [data-testid="stSidebar"] {
+        background-color: #1a1c24;
+        border-right: 1px solid #31333f;
+    }
+
+    /* Elegant high-contrast button */
     .stButton>button {
         width: 100%;
-        border-radius: 12px;
+        border-radius: 8px;
         height: 3.5em;
         background: linear-gradient(90deg, #4CAF50, #45a049);
         color: white;
         font-weight: bold;
         border: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         background: linear-gradient(90deg, #45a049, #4CAF50);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
     }
 
-    /* Sidebar sophistication */
-    [data-testid="stSidebar"] {
-        background-color: #ffffff;
-        border-right: 1px solid #dee2e6;
-    }
-
-    /* Card-like containers for inputs */
+    /* Container cards for sliders */
     div.stSlider {
-        background-color: white;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 10px;
+        background-color: #262730;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #31333f;
+        margin-bottom: 15px;
+    }
+
+    /* Ensuring text visibility inside custom components */
+    .stMarkdown, p, h1, h2, h3, label {
+        color: #ffffff !important;
     }
     </style>
     """, unsafe_allow_html=True)
