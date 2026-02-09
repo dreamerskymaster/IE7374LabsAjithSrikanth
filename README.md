@@ -1,31 +1,64 @@
-# IE7374 - MLOps Labs
+# IE7374 - MLOps Laboratory Assignments
 
 **Student:** Ajith Srikanth  
 **Course:** IE7374 - MLOps  
-**Instructor:** Prof. Ramin  
+**Professor:** Prof. Ramin Mohammadi  
 **Institution:** Northeastern University  
 
 ---
 
-## Repository Overview
-This repository contains the laboratory assignments for the IE7374 MLOps course. Each lab is organized into its own directory with detailed instructions and implementation details.
+## 📖 Repository Overview
+This repository serves as a comprehensive portfolio of laboratory assignments for the IE7374 MLOps course. Each module is designed to demonstrate proficiency in Python development, infrastructure automation, UI/UX design, and Machine Learning integration.
 
-### Labs
-- **[Lab 1: Foundation - Calculator & CI/CD](./Lab%201)**
-  - Virtual Environment setup & project architecture.
-  - Mathematical core logic with custom enhancements.
-  - Dual-framework testing (Pytest & Unittest).
-  - Advanced GitHub Actions workflows (v4/v5).
+---
 
-- **[Lab 2: Integration - Streamlit & FastAPI](./Lab%202)**
-  - Iris Flower classification model (Random Forest).
-  - Robust FastAPI backend serving predictions.
-  - Premium Streamlit dashboard for real-time interaction.
-  - Comprehensive documentation and self-explanatory code.
+## 📂 Laboratory Modules
 
-- **[Lab 2 Proxy: Standalone Cloud Version](./Lab%202%20Proxy)**
-  - Optimized for **Streamlit Cloud** deployment.
-  - Unified architecture (Frontend + Model in one app).
-  - Bypasses local backend requirements for instant hosting.
+### [Lab 1: Foundation - Calculator & CI/CD](./Lab%201)
+*The architecture of reliability.*
+- **Core**: Advanced mathematical logic (`Power`, `Square Root`, `Average`).
+- **Safety**: 100% code coverage across Pytest and Unittest frameworks.
+- **Automation**: Dual-pipeline GitHub Actions for continuous quality assurance.
+- **Setup**: Isolated virtual environment structure.
 
+### [Lab 2: Integration - Streamlit & FastAPI](./Lab%202)
+*The intersection of Engineering and Science.*
+- **Backend**: High-performance FastAPI server serving a Random Forest model.
+- **Frontend**: Premium Streamlit dashboard with real-time botanical classification.
+- **Features**: Batch JSON processing and manual feature manipulation.
+- **Documentation**: Self-explanatory, production-grade codebase with signature comments.
 
+### [Lab 2 Proxy: Standalone Cloud Version](./Lab%202%20Proxy)
+*Optimized for the Cloud.*
+- **Architecture**: Simplified, unified deployment model.
+- **Platform**: Designed for seamless hosting on **Streamlit Cloud**.
+- **Efficiency**: Direct model integration for low-latency, serverless execution.
+
+---
+
+## 🚀 Quick Start Guide
+
+### Lab 1 (Testing)
+```bash
+cd "Lab 1"
+pip install -r requirements.txt
+pytest test/test_pytest.py
+```
+
+### Lab 2 (Integrated API & Dashboard)
+1. **API**: `uvicorn "Lab 2.backend.src.main:app" --port 8000`
+2. **UI**: `streamlit run "Lab 2/frontend/src/Dashboard.py"`
+
+### Lab 2 Proxy (Standalone)
+```bash
+cd "Lab 2 Proxy"
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+---
+
+## 📜 Documentation & Attribution
+All implementations feature unique architectural styles, comprehensive docstrings, and premium styling curated by **Ajith Srikanth**.
+
+Copyright © 2026 Ajith Srikanth. Distributed under the IE7374 Course Guidelines.
