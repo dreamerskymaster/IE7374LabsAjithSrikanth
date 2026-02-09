@@ -71,7 +71,7 @@ st.caption("A standalone, cloud-optimized deployment for IE7374 MLOps Lab 2.")
 
 # Display a banner image for a more visual experience
 try:
-    st.image("dashboard.png", width='stretch', caption="Botanical Exploration System Interface (Cloud Edition)")
+    st.image("flower.jpeg", width='stretch', caption="Botanical Exploration System Interface (Cloud Edition)")
 except:
     pass
 
