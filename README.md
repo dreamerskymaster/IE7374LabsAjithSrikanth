@@ -30,6 +30,7 @@ This repository serves as a comprehensive portfolio of laboratory assignments fo
 
 ### [Lab 2 Proxy: Standalone Cloud Version](./Lab%202%20Proxy)
 *Optimized for the Cloud.*
+- **Live Demo**: [lab2flowerprediction.streamlit.app](https://lab2flowerprediction.streamlit.app/)
 - **Architecture**: Simplified, unified deployment model.
 - **Platform**: Designed for seamless hosting on **Streamlit Cloud**.
 - **Efficiency**: Direct model integration for low-latency, serverless execution.

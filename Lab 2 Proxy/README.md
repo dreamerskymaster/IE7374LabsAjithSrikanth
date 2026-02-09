@@ -3,6 +3,8 @@
 ## Project Overview
 This folder is an **exact mirrored copy** of Lab 2. It contains the full integrated source code for both the **FastAPI backend** and the **Streamlit frontend**. This version is designated for deployment testing and redundant hosting on platforms like Streamlit Cloud.
 
+**Live Deployment:** [lab2flowerprediction.streamlit.app](https://lab2flowerprediction.streamlit.app/)
+
 **Student:** Ajith Srikanth  
 **Course:** IE7374 - MLOps  
 
