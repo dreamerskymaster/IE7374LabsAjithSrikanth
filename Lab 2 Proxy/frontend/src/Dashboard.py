@@ -152,11 +152,11 @@ with st.sidebar:
     if is_online:
         st.success("✅ Backend API: Online")
     elif standalone_model:
-        st.warning("⚡ Backend: Standalone Mode")
-        st.caption("API unreachable. Using embedded model for cloud compatibility.")
+        st.info("🚀 Engine: Cloud Optimized")
+        st.caption("Direct model inference active for seamless cloud execution.")
     else:
-        st.error("❌ Backend API: Offline")
-        st.info("Ensure the FastAPI server is running on port 8000.")
+        st.error("❌ System: Offline")
+        st.info("Please ensure model assets are correctly linked.")
 
     st.divider()
     st.subheader("📥 Input Method Selection")
