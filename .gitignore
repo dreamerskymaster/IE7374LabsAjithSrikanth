@@ -1,4 +1,9 @@
 lab_01/
+lab_02_env/
+env/
+venv/
+.env/
+.venv/
 __pycache__/
 *.pyc
 .DS_Store
