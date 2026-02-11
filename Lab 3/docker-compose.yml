@@ -1,0 +1,92 @@
+# ─── Lab 3: Manufacturing Quality Prediction Pipeline ───
+# 
+# Architecture (3 services vs Lab 2's 2 services):
+#   1. data-generator  → Generates synthetic CNC sensor data
+#   2. model-training   → Trains RandomForest classifier (waits for data)
+#   3. serving          → Flask API with web UI (waits for training)
+#
+# Improvements over Lab 2:
+#   - 3-stage pipeline (data → train → serve) vs 2-stage
+#   - Environment variable configuration
+#   - Container health checks
+#   - Named volumes with explicit lifecycle
+#   - Resource limits (memory)
+#   - Logging driver configuration
+
+services:
+  # ── Stage 1: Generate Manufacturing Sensor Data ──
+  data-generator:
+    image: python:3.10-slim
+    container_name: mfg_data_generator
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+      - ./requirements.txt:/app/requirements.txt
+      - pipeline_data:/exchange
+    command: >
+      sh -c "pip install --no-cache-dir pandas numpy &&
+             python src/data_generator.py"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  # ── Stage 2: Train Quality Prediction Model ──
+  model-training:
+    image: python:3.10-slim
+    container_name: mfg_model_trainer
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+      - ./requirements.txt:/app/requirements.txt
+      - pipeline_data:/exchange
+    depends_on:
+      data-generator:
+        condition: service_completed_successfully
+    command: >
+      sh -c "pip install --no-cache-dir -r requirements.txt &&
+             python src/model_training.py"
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+  # ── Stage 3: Serve Predictions via Flask API ──
+  serving:
+    image: python:3.10-slim
+    container_name: mfg_serving
+    working_dir: /app
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./src:/app/src
+      - ./src/templates:/app/templates
+      - ./src/statics:/app/statics
+      - ./requirements.txt:/app/requirements.txt
+      - pipeline_data:/exchange
+    depends_on:
+      model-training:
+        condition: service_completed_successfully
+    command: >
+      sh -c "pip install --no-cache-dir -r requirements.txt &&
+             python src/main.py"
+    environment:
+      - SERVING_PORT=5000
+      - FLASK_DEBUG=false
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+volumes:
+  pipeline_data:
+    name: mfg_pipeline_data

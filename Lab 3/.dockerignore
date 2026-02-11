@@ -1,0 +1,21 @@
+.git
+.github
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+.db
+.DS_Store
+exchange/
+Lab 1/
+Lab 2/
+Lab 2 Proxy/
+lab_02_env/
+requirements.txt
+Dockerfile
+docker-compose.yml
+README.md
+HOWTO
+*.joblib
+*.json
+*.csv

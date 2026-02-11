@@ -1,0 +1,11 @@
+docker compose up --build
+# Open http://localhost:5001
+
+# Health check:
+# curl http://localhost:5001/health
+
+# Metrics:
+# curl http://localhost:5001/metrics
+
+# Cleanup:
+# docker compose down -v
