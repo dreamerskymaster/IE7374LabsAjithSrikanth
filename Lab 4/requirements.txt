@@ -1,0 +1,13 @@
+# ML Libraries
+scikit-learn
+xgboost
+lightgbm
+numpy<1.25.0
+pandas<2.1.0
+mlflow
+matplotlib
+seaborn
+flask
+apache-airflow-providers-postgres
+joblib
+psycopg2-binary

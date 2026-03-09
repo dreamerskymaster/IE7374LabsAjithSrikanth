@@ -35,6 +35,20 @@ This repository serves as a comprehensive portfolio of laboratory assignments fo
 - **Platform**: Designed for seamless hosting on **Streamlit Cloud**.
 - **Efficiency**: Direct model integration for low-latency, serverless execution.
 
+### [Lab 3: Full Stack ML App](./Lab%203)
+*End-to-end Machine Learning Web Application.*
+- **Backend**: FastAPI with PostgreSQL database.
+- **Frontend**: Premium Jinja2/HTML/CSS dashboard.
+- **Orchestration**: Docker Compose for multi-container deployment.
+- **Features**: Authentication, model prediction, and historical tracking.
+
+### [Lab 4: MLOps Pipeline](./Lab%204)
+*Manufacturing Defect Detection with Airflow & MLflow.*
+- **Orchestration**: Apache Airflow DAGs.
+- **Experiment Tracking**: MLflow multi-model training (RF, XGB, LGB, NN).
+- **Automation**: Champion model auto-registration based on F1 score.
+- **Infrastructure**: Containerized with 2GB memory limits for robust execution.
+
 ---
 
 ## 🚀 Quick Start Guide
@@ -56,6 +70,20 @@ cd "Lab 2 Proxy"
 pip install -r requirements.txt
 streamlit run app.py
 ```
+
+### Lab 3 (Full Stack App)
+```bash
+cd "Lab 3"
+docker compose up --build -d
+```
+Access at http://localhost:8000
+
+### Lab 4 (MLOps Pipeline)
+```bash
+cd "Lab 4"
+docker compose up --build -d
+```
+Access Airflow at http://localhost:8080 and MLflow at http://localhost:5001
 
 ---
 
