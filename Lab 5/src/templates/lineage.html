@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MLOps Lineage Dashboard</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+        }
+        header { 
+            padding: 15px 20px; 
+            background-color: #1f1f1f; 
+            border-bottom: 1px solid #333;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        h2 { margin: 0; font-weight: 400; color: #4fa9ff; }
+        #network { flex-grow: 1; border: none; background: #181818; }
+        .vis-network { outline: none; }
+        .legend { 
+            position: absolute; 
+            bottom: 20px; 
+            right: 20px; 
+            background: rgba(30, 30, 30, 0.9); 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #444; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .legend h4 { margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px;}
+        .color-box { width: 14px; height: 14px; margin-right: 10px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>ML Metadata Lineage</h2>
+    </header>
+    <div id="network"></div>
+    <div class="legend">
+        <h4>Legend</h4>
+        <div class="legend-item"><div class="color-box" style="background:#5cad70;"></div> Artifacts</div>
+        <div class="legend-item"><div class="color-box" style="background:#4fa9ff; border-radius: 50%;"></div> Executions</div>
+    </div>
+    
+    <script type="text/javascript">
+        fetch('/api/lineage')
+            .then(res => res.json())
+            .then(data => {
+                var nodes = new vis.DataSet(data.nodes.map(n => {
+                    let isArtifact = n.type === 'artifact';
+                    let bgColor = isArtifact ? '#5cad70' : '#4fa9ff';
+                    let borderColor = isArtifact ? '#3e7d50' : '#2b78c9';
+                    let shape = isArtifact ? 'box' : 'ellipse';
+                    return {
+                        id: n.id,
+                        label: n.subtype,
+                        title: n.uri ? `URI: ${n.uri}` : `ID: ${n.id}`,
+                        color: { 
+                            background: bgColor, 
+                            border: borderColor,
+                            highlight: { background: '#ffffff', border: borderColor }
+                        },
+                        shape: shape,
+                        font: { color: isArtifact ? '#ffffff' : '#000000', face: 'monospace' },
+                        shadow: true,
+                        margin: 10
+                    }
+                }));
+
+                var edges = new vis.DataSet(data.edges.map(e => {
+                    return {
+                        from: e.source,
+                        to: e.target,
+                        arrows: 'to',
+                        color: { color: '#666', highlight: '#ffffff' },
+                        label: e.type,
+                        font: { color: '#aaaaaa', strokeWidth: 0, size: 11, face: 'monospace', align: 'horizontal' },
+                        smooth: { type: 'cubicBezier', forceDirection: 'horizontal', roundness: 0.4 }
+                    }
+                }));
+
+                var container = document.getElementById('network');
+                var networkData = { nodes: nodes, edges: edges };
+                var options = {
+                    layout: { 
+                        hierarchical: { 
+                            direction: 'LR', 
+                            sortMethod: 'directed',
+                            nodeSpacing: 150,
+                            levelSeparation: 250
+                        } 
+                    },
+                    physics: false,
+                    interaction: {
+                        hover: true,
+                        zoomView: true,
+                        dragView: true
+                    }
+                };
+                new vis.Network(container, networkData, options);
+            })
+            .catch(err => console.error("Error fetching lineage:", err));
+    </script>
+</body>
+</html>

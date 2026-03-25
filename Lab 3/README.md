@@ -1,6 +1,6 @@
 # Lab 3: Manufacturing Quality Prediction with Docker Compose
 
-> **CNC Machining Defect Prediction** — A high-fidelity, 3-stage containerized ML pipeline for predicting precision quality outcomes from manufacturing sensor telemetry.
+> **CNC Machining Defect Prediction** — A 3-stage containerized ML pipeline for predicting product quality from manufacturing sensor data.
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
@@ -10,20 +10,20 @@
 
 ## Overview
 
-This lab elevates the multi-container pattern with a **production-grade** manufacturing use case and strict industrial safety standards:
+This lab extends the multi-container pattern from Lab 2 with a **manufacturing-focused** use case and several architectural improvements:
 
-| Feature | Lab 2 (Iris) | Lab 3 (Precision Manufacturing) |
+| Feature | Lab 2 (Iris) | Lab 3 (Manufacturing) |
 |---|---|---|
 | **Domain** | Iris flower classification | CNC machining defect prediction |
 | **Services** | 2 (train → serve) | 3 (generate → train → serve) |
-| **Data Volume** | 150 records | 5000 high-fidelity sensor records |
 | **ML Framework** | TensorFlow/Keras | scikit-learn (RandomForest) |
-| **Model Specs** | Simple Neural Network | Optimized RandomForest (200 trees, Depth 15) |
-| **Accuracy** | Baseline | **85.7% (Tuned for Industrial Precision)** |
-| **Input Safety** | Basic types | **Strict Server-side Range Validation** |
-| **Terminology** | Mixed | **Full Terminology (No Shortforms)** |
-| **Monitoring** | None | `/health` + `/metrics` endpoints |
-| **Security** | Root user | Non-root user with structured logging |
+| **Model Format** | .keras | .joblib (with scaler) |
+| **Health Checks** | None | `/health` endpoint + Docker HEALTHCHECK |
+| **Monitoring** | None | `/metrics` endpoint with training stats |
+| **Predictions** | Class only | Class + confidence + probability breakdown |
+| **Security** | Root user | Non-root user in Dockerfile |
+| **Config** | Hardcoded | Environment variables |
+| **Resource Limits** | None | Memory limits per service |
 
 ---
 
@@ -33,57 +33,56 @@ This lab elevates the multi-container pattern with a **production-grade** manufa
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │  data-generator  │────▶│  model-training  │────▶│    serving      │
 │                 │     │                 │     │                 │
-│  Generates 5000 │     │  RandomForest   │     │  Premium API    │
-│  Sensor Records │     │  (200 Estimators)│    │  + Glassmorphic │
-│  w/ Fail Rules  │     │  85.7% Accuracy │     │  Port 5001      │
+│  Generates 2000 │     │  RandomForest   │     │  Flask API      │
+│  CNC sensor     │     │  Classifier     │     │  + Web UI       │
+│  records        │     │  (150 trees)    │     │  Port 5000      │
 └────────┬────────┘     └────────┬────────┘     └────────┬────────┘
          │                       │                       │
          └───────────────────────┴───────────────────────┘
                          pipeline_data (shared volume)
 ```
 
-### Industrial Sensor Telemetry
-- **Spindle Speed** — Revolutions Per Minute
-- **Feed Rate** — Millimeters Per Minute
-- **Depth of Cut** — Millimeters
-- **Vibration Amplitude** — Millimeters Per Second
-- **Process Temperature** — Degrees Celsius
-- **Cutting Tool Wear** — Millimeters
+### Sensor Features
+- **Spindle Speed** (RPM) — Rotational speed of cutting tool
+- **Feed Rate** (mm/min) — Workpiece travel speed
+- **Depth of Cut** (mm) — Cutting depth into material
+- **Vibration** (mm/s) — Machine vibration amplitude
+- **Temperature** (°C) — Cutting zone temperature
+- **Tool Wear** (mm) — Flank wear on cutting tool
 
-### Operational Outcomes
-- 🟢 **Good Quality** — Process within nominal tolerances
-- 🟡 **Minor Defect** — Non-critical surface or dimensional variance
-- 🔴 **Major Defect** — Critical failure requiring scrap or rework
+### Quality Classes
+- 🟢 **Good Quality** — Within all tolerances
+- 🟡 **Minor Defect** — Surface roughness out of spec
+- 🔴 **Major Defect** — Dimensional tolerance failure
 
 ---
 
 ## How to Run
 
 ```bash
-# Build and execute the full cycle
+# Build and start all 3 services
 docker compose up --build
 
-# Run in detached mode for production testing
+# Or run in detached mode
 docker compose up --build -d
 ```
 
-Once running, access the dashboard at **http://localhost:5001**.
+Once running, open **http://localhost:5001** in your browser.
 
-### Predictive API Reference
+### API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/` | GET | Premium Dashboard UI |
-| `/predict` | POST | High-fidelity prediction engine (strict validation) |
-| `/health` | GET | Real-time service status check |
-| `/metrics` | GET | Model accuracy and operational metrics |
+| `/` | GET | Web UI for predictions |
+| `/predict` | POST | JSON/form prediction endpoint |
+| `/health` | GET | Container health check |
+| `/metrics` | GET | Training metrics & serving stats |
 
-### Professional Validation (curl)
+### Example Prediction (curl)
 
 ```bash
 curl -X POST http://localhost:5001/predict \
-  -H "Content-Type: application/json" \
-  -d '{"spindle_speed": 3500, "feed_rate": 450, "depth_of_cut": 2.5, "vibration": 5.2, "temperature": 180, "tool_wear": 0.15}'
+  -d "spindle_speed=2500&feed_rate=200&depth_of_cut=2.0&vibration=6.5&temperature=290&tool_wear=0.45"
 ```
 
 ---
@@ -91,28 +90,28 @@ curl -X POST http://localhost:5001/predict \
 ## Cleanup
 
 ```bash
-docker compose down -v   # Terminate containers and purge shared volumes
+docker compose down -v   # Stop containers and remove volume
 ```
 
 ---
 
-## Project Hierarchy
+## File Structure
 
 ```
-Lab 3/
-├── docker-compose.yml        # Multi-service orchestration & volume mapping
-├── Dockerfile                # High-security production image definition (Non-root)
-├── requirements.txt          # Explicit version-locked dependencies
-├── .dockerignore             # Efficient build-context management
-├── README.md                 # Technical documentation
+Lab3/
+├── docker-compose.yml        # 3-service pipeline orchestration
+├── Dockerfile                # Production-ready image definition
+├── requirements.txt          # Python dependencies
+├── .dockerignore             # Build context exclusions
+├── README.md                 # This file
 └── src/
-    ├── data_generator.py     # Stage 1: Industrial telemetry generation (5000 samples)
-    ├── model_training.py     # Stage 2: Hyperparameter-tuned RandomForest pipeline
-    ├── main.py               # Stage 3: Strict-validation serving API
+    ├── data_generator.py     # Stage 1: Synthetic CNC data generation
+    ├── model_training.py     # Stage 2: RandomForest training pipeline
+    ├── main.py               # Stage 3: Flask serving API
     └── templates/
-        └── predict.html      # Premium glassmorphic analytics dashboard
+        └── predict.html      # Manufacturing-themed web UI
 ```
 
 ---
 
-**Author:** Ajith Srikanth | MLOps & Industrial AI — Docker Labs
+**Author:** Ajith Srikanth | MLOps — Docker Labs

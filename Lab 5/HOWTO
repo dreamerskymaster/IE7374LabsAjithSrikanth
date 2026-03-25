@@ -1,0 +1,30 @@
+╔══════════════════════════════════════════════════════════════╗
+║  Lab 4 — Manufacturing Defect Detection                     ║
+║  Airflow + MLflow Pipeline                                  ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                              ║
+║  QUICK START:                                                ║
+║  $ cd "Lab 4"                                                ║
+║  $ docker compose up --build -d                              ║
+║  (wait ~2 minutes for initialization)                        ║
+║                                                              ║
+║  OPEN UIs:                                                   ║
+║  Airflow:  http://localhost:8080  (airflow/airflow)          ║
+║  MLflow:   http://localhost:5001                             ║
+║                                                              ║
+║  RUN PIPELINE:                                               ║
+║  1. Open Airflow → find "manufacturing_defect_detection"     ║
+║  2. Toggle ON → Click ▶ "Trigger DAG"                       ║
+║  3. Watch Graph view for task progress                       ║
+║  4. Open MLflow → select experiment → compare runs           ║
+║                                                              ║
+║  VIEW LOGS:                                                  ║
+║  $ docker compose logs -f airflow-scheduler                  ║
+║                                                              ║
+║  TEAR DOWN:                                                  ║
+║  $ docker compose down -v                                    ║
+║                                                              ║
+║  MODELS: RandomForest, XGBoost, LightGBM, Neural Net        ║
+║  CHAMPION: Auto-selected by F1 weighted score                ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝

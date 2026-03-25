@@ -3,460 +3,407 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manufacturing Quality Control | Industrial Predictive Analytics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>MFG-QC | Manufacturing Quality Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-accent: #00ff88;  /* Precision Green */
-            --warning-accent: #ffb300;  /* Operational Warning */
-            --danger-accent: #ff3d00;   /* Critical Alert */
-            --bg-deep: #05070a;
-            --glass-surface: rgba(15, 20, 25, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #e0e6ed;
-            --text-muted: #8492a6;
+            --primary: #00e676;     /* Industrial Green */
+            --warning: #ff9100;     /* Amber Warning */
+            --danger: #ff1744;      /* Red Alert */
+            --bg-dark: #0a0e14;
+            --surface: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #c8d6e5;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            -webkit-font-smoothing: antialiased;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg-deep);
-            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 0% 0%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(255, 61, 0, 0.03) 0%, transparent 40%);
+                radial-gradient(ellipse at 10% 20%, rgba(0,230,118,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 80%, rgba(255,145,0,0.04) 0%, transparent 50%);
         }
 
-        .dashboard-canvas {
-            width: 95%;
-            max-width: 900px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            padding: 2rem;
-            position: relative;
-        }
+        .container { width: 92%; max-width: 520px; padding: 1rem 0; }
 
-        @media (max-width: 850px) {
-            .dashboard-canvas { grid-template-columns: 1fr; }
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
-
-        /* Sidebar / Header */
-        .brand-section {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--primary-accent);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
+        .header .badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            background: rgba(0,230,118,0.1);
+            color: var(--primary);
+            border: 1px solid rgba(0,230,118,0.25);
+            padding: 4px 14px;
+            border-radius: 20px;
             letter-spacing: 2px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            margin-bottom: 1.5rem;
-            width: fit-content;
-        }
-
-        .brand-section h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, #fff, #8492a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .brand-section p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 350px;
-            line-height: 1.6;
-        }
-
-        /* Main Glass Card */
-        .glass-panel {
-            background: var(--glass-surface);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        h2 {
-            font-size: 0.8rem;
             text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .header h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
             letter-spacing: 3px;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 0.75rem;
+        }
+        .header p {
+            font-size: 0.8rem;
+            color: #576574;
+            margin-top: 0.4rem;
         }
 
-        /* Form Controls */
+        /* Card */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            margin-bottom: 1.2rem;
+        }
+
+        /* Section Label */
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: #576574;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Input Grid */
         .input-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
+            gap: 1rem;
         }
 
-        .form-group { margin-bottom: 0.5rem; }
-
-        .form-group label {
+        .input-group { position: relative; }
+        .input-group label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
+            color: #8395a7;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.5px;
         }
-
-        .form-group label span {
-            color: rgba(255, 255, 255, 0.4);
+        .input-group .unit {
             font-weight: 400;
-            font-size: 0.65rem;
+            color: #576574;
+            font-size: 0.6rem;
         }
-
-        .custom-input {
+        .input-group input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 12px 16px;
+            padding: 10px 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             color: #fff;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
-
-        .custom-input:focus {
+        .input-group input:focus {
             outline: none;
-            border-color: var(--primary-accent);
-            background: rgba(0, 255, 136, 0.05);
-            box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,230,118,0.08);
         }
+        .input-group input::placeholder { color: #2d3436; }
 
         /* Submit Button */
-        .action-button {
+        .submit-btn {
             width: 100%;
-            margin-top: 2rem;
-            background: var(--primary-accent);
-            color: #000;
+            padding: 14px;
+            margin-top: 1.5rem;
+            background: linear-gradient(135deg, #00e676, #00c853);
             border: none;
-            border-radius: 14px;
-            padding: 16px;
-            font-size: 0.9rem;
+            border-radius: 10px;
+            color: #0a0e14;
+            font-family: 'JetBrains Mono', monospace;
             font-weight: 700;
-            text-transform: uppercase;
+            font-size: 0.85rem;
             letter-spacing: 2px;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
+            transition: all 0.2s;
+            position: relative;
         }
-
-        .action-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0, 255, 136, 0.3);
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(0,230,118,0.25);
         }
-
-        .action-button:active { transform: translateY(0); }
-        .action-button:disabled {
+        .submit-btn:active { transform: translateY(0); }
+        .submit-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background: var(--text-muted);
+            transform: none;
         }
 
-        /* Results Display */
-        .result-overlay {
+        /* Result Card */
+        .result-card {
             display: none;
-            margin-top: 2rem;
-            animation: fadeIn 0.5s ease;
+            animation: slideUp 0.4s ease;
         }
+        .result-card.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .prediction-header {
+        /* Status Indicator */
+        .status-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .status-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        .status-dot.good { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+        .status-dot.minor { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+        .status-dot.major { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        .prediction-label {
-            font-size: 1.4rem;
+        .predicted-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #fff;
         }
-
-        .confidence-chip {
+        .confidence-value {
             font-family: 'JetBrains Mono', monospace;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            color: var(--primary-accent);
+            font-size: 0.85rem;
+            color: var(--primary);
         }
 
-        /* Gauge Bars */
-        .metrics-grid { display: flex; flex-direction: column; gap: 1rem; }
-
-        .metric-row { display: flex; align-items: center; gap: 1rem; }
-
-        .metric-name {
-            width: 140px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+        /* Probability Bars */
+        .prob-bars { margin-top: 1rem; }
+        .prob-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.72rem;
+        }
+        .prob-label {
+            width: 100px;
             font-weight: 600;
+            color: #8395a7;
+            flex-shrink: 0;
         }
-
-        .gauge-track {
+        .prob-bar-bg {
             flex: 1;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 4px;
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
             overflow: hidden;
-            position: relative;
+            margin: 0 10px;
         }
-
-        .gauge-fill {
+        .prob-bar-fill {
             height: 100%;
-            width: 0%;
-            background: var(--primary-accent);
-            border-radius: 4px;
-            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 3px;
+            transition: width 0.6s ease;
         }
-
-        .gauge-fill.good { background: var(--primary-accent); }
-        .gauge-fill.minor { background: var(--warning-accent); }
-        .gauge-fill.major { background: var(--danger-accent); }
-
-        .metric-pct {
-            width: 50px;
+        .prob-bar-fill.good { background: var(--primary); }
+        .prob-bar-fill.minor { background: var(--warning); }
+        .prob-bar-fill.major { background: var(--danger); }
+        .prob-pct {
+            width: 45px;
             text-align: right;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: #fff;
+            color: #576574;
         }
 
-        /* Error States */
-        .error-log {
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 0.6rem;
+            color: #2d3436;
             margin-top: 1rem;
-            background: rgba(255, 61, 0, 0.1);
-            border: 1px solid rgba(255, 61, 0, 0.2);
-            padding: 12px;
-            border-radius: 12px;
-            color: var(--danger-accent);
-            font-size: 0.75rem;
-            display: none;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
         }
 
         /* Spinner */
         .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(0,0,0,0.2);
-            border-top: 2px solid #000;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
             display: none;
+            width: 18px; height: 18px;
+            border: 2px solid rgba(10,14,20,0.3);
+            border-radius: 50%;
+            border-top-color: #0a0e14;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
         }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .footer-note {
-            grid-column: 1 / -1;
-            text-align: center;
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-top: 2rem;
-            opacity: 0.4;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 
-<div class="dashboard-canvas">
-    <div class="brand-section">
-        <div class="status-badge">Laboratory Phase 3 • Precise Measurement</div>
-        <h1>Manufacturing<br>Quality Control</h1>
-        <p>Predictive analytical engine for CNC machining defect detection using high-fidelity sensor telemetry.</p>
+<div class="container">
+    <div class="header">
+        <div class="badge">Docker Lab 3 · MLOps</div>
+        <h1>MFG-QC</h1>
+        <p>CNC Machining Defect Prediction System</p>
     </div>
 
-    <div class="glass-panel">
-        <h2>Industrial Sensor Input</h2>
-        <form id="analyticsForm">
+    <div class="card">
+        <div class="section-label">⚙ Sensor Input Parameters</div>
+        <form id="predictionForm">
             <div class="input-grid">
-                <div class="form-group">
-                    <label>Spindle Speed<br><span>Revolutions Per Minute</span></label>
-                    <input type="number" name="spindle_speed" class="custom-input" placeholder="800 - 5000" step="0.1" required>
+                <div class="input-group">
+                    <label>Spindle Speed <span class="unit">(RPM)</span></label>
+                    <input type="number" id="spindle_speed" name="spindle_speed" step="0.1" placeholder="800-3500" required>
                 </div>
-                <div class="form-group">
-                    <label>Feed Rate<br><span>Millimeters Per Minute</span></label>
-                    <input type="number" name="feed_rate" class="custom-input" placeholder="50 - 1000" step="0.1" required>
+                <div class="input-group">
+                    <label>Feed Rate <span class="unit">(mm/min)</span></label>
+                    <input type="number" id="feed_rate" name="feed_rate" step="0.1" placeholder="50-500" required>
                 </div>
-                <div class="form-group">
-                    <label>Depth of Cut<br><span>Millimeters</span></label>
-                    <input type="number" name="depth_of_cut" class="custom-input" placeholder="0.1 - 10.0" step="0.01" required>
+                <div class="input-group">
+                    <label>Depth of Cut <span class="unit">(mm)</span></label>
+                    <input type="number" id="depth_of_cut" name="depth_of_cut" step="0.01" placeholder="0.5-5.0" required>
                 </div>
-                <div class="form-group">
-                    <label>Vibration Amplitude<br><span>Millimeters Per Second</span></label>
-                    <input type="number" name="vibration" class="custom-input" placeholder="0.1 - 15.0" step="0.01" required>
+                <div class="input-group">
+                    <label>Vibration <span class="unit">(mm/s)</span></label>
+                    <input type="number" id="vibration" name="vibration" step="0.01" placeholder="0.1-8.0" required>
                 </div>
-                <div class="form-group">
-                    <label>Process Temperature<br><span>Degrees Celsius</span></label>
-                    <input type="number" name="temperature" class="custom-input" placeholder="20 - 500" step="0.1" required>
+                <div class="input-group">
+                    <label>Temperature <span class="unit">(°C)</span></label>
+                    <input type="number" id="temperature" name="temperature" step="0.1" placeholder="25-350" required>
                 </div>
-                <div class="form-group">
-                    <label>Cutting Tool Wear<br><span>Millimeters</span></label>
-                    <input type="number" name="tool_wear" class="custom-input" placeholder="0.0 - 1.0" step="0.001" required>
+                <div class="input-group">
+                    <label>Tool Wear <span class="unit">(mm)</span></label>
+                    <input type="number" id="tool_wear" name="tool_wear" step="0.001" placeholder="0.0-0.6" required>
                 </div>
             </div>
 
-            <button type="submit" class="action-button" id="submitButton">
-                <span id="buttonText">Execute Prediction</span>
-                <div class="spinner" id="loadingSpinner"></div>
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span id="btnText">▶ Run Prediction</span>
+                <div class="spinner" id="btnSpinner"></div>
             </button>
         </form>
+    </div>
 
-        <div class="error-log" id="validationAlert"></div>
-
-        <div class="result-overlay" id="resultOverlay">
-            <h2>Analytical Output</h2>
-            <div class="prediction-header">
-                <div class="prediction-label" id="resultLabel">--</div>
-                <div class="confidence-chip" id="confChip">0.0% Confidence</div>
+    <div class="card result-card" id="resultCard">
+        <div class="section-label">◉ Prediction Result</div>
+        
+        <div class="status-row">
+            <div>
+                <span class="status-dot" id="statusDot"></span>
+                <span class="predicted-label" id="predictedClass"></span>
             </div>
-            
-            <div class="metrics-grid">
-                <div class="metric-row">
-                    <span class="metric-name">Good Quality</span>
-                    <div class="gauge-track"><div class="gauge-fill good" id="fillGood" style="width: 0%"></div></div>
-                    <span class="metric-pct" id="pctGood">0%</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-name">Minor Defect</span>
-                    <div class="gauge-track"><div class="gauge-fill minor" id="fillMinor" style="width: 0%"></div></div>
-                    <span class="metric-pct" id="pctMinor">0%</span>
-                </div>
-                <div class="metric-row">
-                    <span class="metric-name">Major Defect</span>
-                    <div class="gauge-track"><div class="gauge-fill major" id="fillMajor" style="width: 0%"></div></div>
-                    <span class="metric-pct" id="pctMajor">0%</span>
-                </div>
+            <span class="confidence-value" id="confidenceValue"></span>
+        </div>
+
+        <div class="prob-bars">
+            <div class="prob-row">
+                <span class="prob-label">Good</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill good" id="barGood" style="width:0%"></div></div>
+                <span class="prob-pct" id="pctGood">0%</span>
+            </div>
+            <div class="prob-row">
+                <span class="prob-label">Minor Defect</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill minor" id="barMinor" style="width:0%"></div></div>
+                <span class="prob-pct" id="pctMinor">0%</span>
+            </div>
+            <div class="prob-row">
+                <span class="prob-label">Major Defect</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill major" id="barMajor" style="width:0%"></div></div>
+                <span class="prob-pct" id="pctMajor">0%</span>
             </div>
         </div>
     </div>
 
-    <div class="footer-note">
-        System Operational • No Acronyms Policy • AJITH SRIKANTH • Industrial MLOps v2.0
+    <div class="footer">
+        MFG-QC v1.0 · AJITH SRIKANTH · DOCKER COMPOSE + SCIKIT-LEARN
     </div>
 </div>
 
 <script>
 $(document).ready(function() {
-    $('#analyticsForm').on('submit', function(e) {
+    $('#predictionForm').on('submit', function(e) {
         e.preventDefault();
         
-        const $btn = $('#submitButton');
-        const $text = $('#buttonText');
-        const $spin = $('#loadingSpinner');
-        const $error = $('#validationAlert');
-        const $result = $('#resultOverlay');
-
+        var $btn = $('#submitBtn');
+        var $text = $('#btnText');
+        var $spin = $('#btnSpinner');
+        
         $btn.prop('disabled', true);
         $text.hide();
         $spin.show();
-        $error.hide();
-        $result.fadeOut(200);
 
-        const formData = {};
-        $(this).serializeArray().forEach(item => {
-            formData[item.name] = item.value;
-        });
+        var formData = {};
+        var fields = ['spindle_speed','feed_rate','depth_of_cut','vibration','temperature','tool_wear'];
+        fields.forEach(function(f) { formData[f] = $('#'+f).val(); });
 
         $.ajax({
             type: 'POST',
             url: '/predict',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
+            data: formData,
             dataType: 'json'
         }).done(function(data) {
-            if (data.success) {
-                // Update Prediction result
-                $('#resultLabel').text(data.prediction_result.toUpperCase());
-                $('#confChip').text(data.confidence_score_percentage + '% CONFIDENCE');
-
-                // Color based on class
-                const labelColorMap = {
-                    'Good Quality': '#00ff88',
-                    'Minor Defect': '#ffb300',
-                    'Major Defect': '#ff3d00'
-                };
-                $('#resultLabel').css('color', labelColorMap[data.prediction_result]);
-
-                // Update Gauges
-                const probs = data.probability_distribution;
-                $('#fillGood').css('width', probs['Good Quality'] + '%');
-                $('#pctGood').text(Math.round(probs['Good Quality']) + '%');
-                
-                $('#fillMinor').css('width', probs['Minor Defect'] + '%');
-                $('#pctMinor').text(Math.round(probs['Minor Defect']) + '%');
-                
-                $('#fillMajor').css('width', probs['Major Defect'] + '%');
-                $('#pctMajor').text(Math.round(probs['Major Defect']) + '%');
-
-                $result.fadeIn(500);
-            } else {
-                handleError(data.errors);
-            }
-        }).fail(function(xhr) {
-            const response = xhr.responseJSON;
-            if (response && response.errors) {
-                handleError(response.errors);
-            } else {
-                handleError(["Critical communication failure with predictive engine."]);
-            }
+            // Update prediction label
+            $('#predictedClass').text(data.predicted_class.toUpperCase());
+            
+            // Confidence
+            var confPct = (data.confidence * 100).toFixed(1);
+            $('#confidenceValue').text(confPct + '% conf.');
+            
+            // Status dot color
+            var dot = $('#statusDot');
+            dot.removeClass('good minor major');
+            if (data.predicted_class === 'Good Quality') dot.addClass('good');
+            else if (data.predicted_class === 'Minor Defect') dot.addClass('minor');
+            else dot.addClass('major');
+            
+            // Probability bars
+            var probs = data.probabilities;
+            var good = (probs['Good Quality'] * 100);
+            var minor = (probs['Minor Defect'] * 100);
+            var major = (probs['Major Defect'] * 100);
+            
+            $('#barGood').css('width', good + '%');
+            $('#pctGood').text(good.toFixed(1) + '%');
+            $('#barMinor').css('width', minor + '%');
+            $('#pctMinor').text(minor.toFixed(1) + '%');
+            $('#barMajor').css('width', major + '%');
+            $('#pctMajor').text(major.toFixed(1) + '%');
+            
+            // Show result
+            $('#resultCard').addClass('active');
+            
+        }).fail(function() {
+            alert('Prediction failed. Check sensor input values.');
         }).always(function() {
             $btn.prop('disabled', false);
             $text.show();
             $spin.hide();
         });
-
-        function handleError(errors) {
-            $error.empty();
-            errors.forEach(err => {
-                $error.append('<div>• ' + err + '</div>');
-            });
-            $error.fadeIn(300);
-        }
     });
 });
 </script>

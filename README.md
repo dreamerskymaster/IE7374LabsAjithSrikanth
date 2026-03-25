@@ -49,6 +49,13 @@ This repository serves as a comprehensive portfolio of laboratory assignments fo
 - **Automation**: Champion model auto-registration based on F1 score.
 - **Infrastructure**: Containerized with 2GB memory limits for robust execution.
 
+### [Lab 5: MLOps Defect Pipeline on GCP](./Lab%205)
+*Production-grade tracking, profiling, and cloud deployment.*
+- **Data Profiling**: TensorFlow Data Validation (TFDV) for auto-schema generation and anomaly detection.
+- **Lineage Tracking**: Google ML Metadata (MLMD) with a custom interactive dashboard visualization.
+- **Advanced Tuning**: Extended hyperparameter grid searching via `GridSearchCV`.
+- **Cloud Deployment**: Serverless prediction API on GCP Cloud Run with zero-cost tier configuration.
+
 ---
 
 ## 🚀 Quick Start Guide
@@ -84,6 +91,18 @@ cd "Lab 4"
 docker compose up --build -d
 ```
 Access Airflow at http://localhost:8080 and MLflow at http://localhost:5001
+
+### Lab 5 (GCP & Metadata Pipeline)
+```bash
+cd "Lab 5"
+docker compose up --build -d
+```
+Access Airflow at http://localhost:8080, MLflow at http://localhost:5001, and the Lineage Dashboard at http://localhost:5003.
+
+**Serverless API Deployment:**
+```bash
+./deploy.sh
+```
 
 ---
 

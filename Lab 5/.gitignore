@@ -1,0 +1,10 @@
+data/
+mlflow-artifacts/
+logs/
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+.idea/
+.vscode/

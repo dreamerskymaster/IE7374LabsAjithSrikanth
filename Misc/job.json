@@ -1,0 +1,422 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \{\
+  "nodes": [\
+    \{\
+      "parameters": \{\
+        "httpMethod": "POST",\
+        "path": "resume",\
+        "options": \{\}\
+      \},\
+      "type": "n8n-nodes-base.webhook",\
+      "typeVersion": 2,\
+      "position": [\
+        -300,\
+        0\
+      ],\
+      "id": "WEBHOOK",\
+      "name": "Frontend webhook"\
+    \},\
+\
+    /* --------------------  A \'96  Receive payload + PDF -------------------- */\
+    \{\
+      "parameters": \{\
+        "binaryPropertyName": "resume",\
+        "options": \{\}\
+      \},\
+      "type": "n8n-nodes-base.extractFromFile",\
+      "typeVersion": 1,\
+      "position": [\
+        -100,\
+        0\
+      ],\
+      "id": "PDF_EXTRACTOR",\
+      "name": "Extract PDF \uc0\u8594  text"\
+    \},\
+\
+    /* --------------------  B \'96  LLM structured extraction -------------------- */\
+    \{\
+      "parameters": \{\
+        "promptType": "define",\
+        "text": "=You will be given a raw resume text. Extract the fields below exactly as JSON:\\n\{\\n  \\"Name\\": \\"...\\",\\n  \\"Address\\": \\"...\\",\\n  \\"Email\\": \\"...\\",\\n  \\"Education\\": [\{\\"Degree\\":\\"...\\",\\"Institution\\":\\"...\\",\\"Grade\\":\\"...\\",\\"Year\\":2022\}]\\n\}\\nResume text:\\n\{\{ $binary.resume \}\}",\
+        "hasOutputParser": true,\
+        "options": \{\
+          "systemMessage": "You are a helpful assistant."\
+        \}\
+      \},\
+      "type": "@n8n/n8n-nodes-langchain.agent",\
+      "typeVersion": 2,\
+      "position": [\
+        100,\
+        0\
+      ],\
+      "id": "LLM_EXTRACT",\
+      "name": "Personal details (LLM)",\
+      "connections": \{\
+        "main": [\
+          [\
+            \{\
+              "node": "STRUCTURED_PARSER",\
+              "type": "main",\
+              "index": 0\
+            \}\
+          ]\
+        ]\
+      \}\
+    \},\
+    \{\
+      "parameters": \{\
+        "jsonSchemaExample": "\{\\n  \\"Name\\": \\"John Doe\\",\\n  \\"Address\\": \\"123 Main St, NY\\",\\n  \\"Email\\": \\"john@example.com\\",\\n  \\"Education\\": [\{\\"Degree\\":\\"B.Tech\\",\\"Institution\\":\\"XYZ University\\",\\"Grade\\":\\"8.5 CGPA\\",\\"Year\\":2022\}]\\n\}"\
+      \},\
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",\
+      "typeVersion": 1.2,\
+      "position": [\
+        300,\
+        0\
+      ],\
+      "id": "STRUCTURED_PARSER",\
+      "name": "Parse structured JSON"\
+    \},\
+\
+    /* --------------------  C \'96  Create candidate folder & sheet -------------------- */\
+    \{\
+      "parameters": \{\
+        "resource": "folder",\
+        "name": "=\{\{ $json.output.Name \}\}",\
+        "driveId": \{\
+          "__rl": true,\
+          "value": "My Drive",\
+          "mode": "list"\
+        \},\
+        "options": \{\}\
+      \},\
+      "type": "n8n-nodes-base.googleDrive",\
+      "typeVersion": 3,\
+      "position": [\
+        500,\
+        -200\
+      ],\
+      "id": "CREATE_FOLDER",\
+      "name": "Create Google\uc0\u8239 Drive folder"\
+    \},\
+    \{\
+      "parameters": \{\
+        "resource": "sheet",\
+        "operation": "append",\
+        "documentId": "=\{\{ $env.GOOGLE_SHEET_ID \}\}",   // put the ID of a \'93master\'94 spreadsheet in .env\
+        "sheetName": "Candidates",\
+        "columns": \{\
+          "mappingMode": "defineBelow",\
+          "value": \{\
+            "Name": "=\{\{ $json.output.Name \}\}",\
+            "Address": "=\{\{ $json.output.Address \}\}",\
+            "Email": "=\{\{ $json.output.Email \}\}",\
+            "ResumeFolderId": "=\{\{ $node[\\"CREATE_FOLDER\\"].json.id \}\}",\
+            "LinkedIn": "=\{\{ $json.body.linkedin \}\}",\
+            "GitHub": "=\{\{ $json.body.github \}\}"\
+          \},\
+          "schema": [\
+            \{ "id": "Name", "type": "string" \},\
+            \{ "id": "Address", "type": "string" \},\
+            \{ "id": "Email", "type": "string" \},\
+            \{ "id": "ResumeFolderId", "type": "string" \},\
+            \{ "id": "LinkedIn", "type": "string" \},\
+            \{ "id": "GitHub", "type": "string" \}\
+          ]\
+        \},\
+        "options": \{\}\
+      \},\
+      "type": "n8n-nodes-base.googleSheets",\
+      "typeVersion": 4.6,\
+      "position": [\
+        500,\
+        0\
+      ],\
+      "id": "APPEND_CANDIDATE",\
+      "name": "Add candidate to sheet"\
+    \},\
+\
+    /* --------------------  D \'96  Pull jobs from Apify -------------------- */\
+    \{\
+      "parameters": \{\
+        "method": "GET",\
+        "url": "https://api.apify.com/v2/acts/muhammetakkurtt~naukri-job-scraper/run-sync-get-dataset-items?token=\{\{ $env.APIFY_TOKEN \}\}",\
+        "queryParameters": \{\
+          "parameters": [\
+            \{\
+              "name": "title",\
+              "value": "=\{\{ $json.body.title \}\}"\
+            \},\
+            \{\
+              "name": "experience",\
+              "value": "=\{\{ $json.body.experience \}\}"\
+            \},\
+            \{\
+              "name": "location",\
+              "value": "=\{\{ $json.body.location \}\}"\
+            \},\
+            \{\
+              "name": "freshness",\
+              "value": "7"\
+            \},\
+            \{\
+              "name": "maxJobs",\
+              "value": "50"\
+            \}\
+          ]\
+        \},\
+        "options": \{\}\
+      \},\
+      "type": "n8n-nodes-base.httpRequest",\
+      "typeVersion": 4.2,\
+      "position": [\
+        500,\
+        200\
+      ],\
+      "id": "GET_JOBS",\
+      "name": "Fetch Naukri jobs"\
+    \},\
+\
+    /* --------------------  E \'96  Loop + LLM resume tailoring -------------------- */\
+    \{\
+      "parameters": \{\
+        "batchSize": 1,\
+        "batchKey": "jobs"\
+      \},\
+      "type": "n8n-nodes-base.splitInBatches",\
+      "typeVersion": 3,\
+      "position": [\
+        800,\
+        200\
+      ],\
+      "id": "LOOP_JOBS",\
+      "name": "Loop over jobs",\
+      "connections": \{\
+        "main": [\
+          [\
+            \{\
+              "node": "TAILOR_PROMPT",\
+              "type": "main",\
+              "index": 0\
+            \}\
+          ]\
+        ]\
+      \}\
+    \},\
+\
+    \{\
+      "parameters": \{\
+        "promptType": "define",\
+        "text": "=You are a professional resume writer. Rewrite the **original** resume (provided below) **from scratch** so it is perfectly matched to the following job description. **Do NOT reuse any phrasing from the original** except for Name, Address, Email, LinkedIn, GitHub, and education details.\\n\\n---\\n**Original resume (plain text)**\\n\{\{ $binary.resume \}\}\\n---\\n**Job title**: \{\{ $json.title \}\}\\n**Job description**: \{\{ $json.description \}\}\\n**Required skills**: \{\{ $json.tagsAndSkills \}\}\\n---\\nReturn **only** the final formatted resume (markdown) \'96 no extra commentary.\\n",\
+        "hasOutputParser": false,\
+        "options": \{\
+          "systemMessage": "You are an expert ATS\uc0\u8209 optimised resume writer."\
+        \}\
+      \},\
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",\
+      "typeVersion": 1,\
+      "position": [\
+        1000,\
+        200\
+      ],\
+      "id": "TAILOR_PROMPT",\
+      "name": "Tailor resume (LLM)",\
+      "connections": \{\
+        "main": [\
+          [\
+            \{\
+              "node": "SAVE_RESUME",\
+              "type": "main",\
+              "index": 0\
+            \}\
+          ]\
+        ]\
+      \}\
+    \},\
+\
+    /* --------------------  F \'96  Save tailored resume & update sheet -------------------- */\
+    \{\
+      "parameters": \{\
+        "operation": "upload",\
+        "resource": "file",\
+        "fileName": "=\{\{ $json.title \}\} - \{\{ $node[\\"APPEND_CANDIDATE\\"].json.Name \}\}.md",\
+        "folderId": "=\{\{ $node[\\"CREATE_FOLDER\\"].json.id \}\}",\
+        "binaryPropertyName": "resume",\
+        "binaryDataMode": "base64"\
+      \},\
+      "type": "n8n-nodes-base.googleDrive",\
+      "typeVersion": 3,\
+      "position": [\
+        1200,\
+        200\
+      ],\
+      "id": "SAVE_RESUME",\
+      "name": "Upload tailored resume",\
+      "connections": \{\
+        "main": [\
+          [\
+            \{\
+              "node": "UPDATE_SHEET",\
+              "type": "main",\
+              "index": 0\
+            \}\
+          ]\
+        ]\
+      \}\
+    \},\
+\
+    \{\
+      "parameters": \{\
+        "resource": "sheet",\
+        "operation": "append",\
+        "documentId": "=\{\{ $env.GOOGLE_SHEET_ID \}\}",\
+        "sheetName": "Candidates",\
+        "columns": \{\
+          "mappingMode": "defineBelow",\
+          "value": \{\
+            "Name": "=\{\{ $node[\\"APPEND_CANDIDATE\\"].json.Name \}\}",\
+            "JobTitle": "=\{\{ $json.title \}\}",\
+            "JobLink": "=\{\{ $json.jdURL \}\}",\
+            "ResumeLink": "=\{\{ $node[\\"SAVE_RESUME\\"].json.webViewLink \}\}"\
+          \},\
+          "schema": [\
+            \{ "id": "Name", "type": "string" \},\
+            \{ "id": "JobTitle", "type": "string" \},\
+            \{ "id": "JobLink", "type": "string" \},\
+            \{ "id": "ResumeLink", "type": "string" \}\
+          ]\
+        \},\
+        "options": \{\}\
+      \},\
+      "type": "n8n-nodes-base.googleSheets",\
+      "typeVersion": 4.6,\
+      "position": [\
+        1400,\
+        200\
+      ],\
+      "id": "UPDATE_SHEET",\
+      "name": "Log job\uc0\u8209 specific resume"\
+    \},\
+\
+    /* --------------------  G \'96  (Optional) Return summary to front\uc0\u8209 end -------------------- */\
+    \{\
+      "parameters": \{\
+        "functionCode": "return [\{ json: \{ message: 'All resumes generated', count: $node[\\"LOOP_JOBS\\"].json.length \} \}];"\
+      \},\
+      "type": "n8n-nodes-base.function",\
+      "typeVersion": 2,\
+      "position": [\
+        1600,\
+        200\
+      ],\
+      "id": "RETURN_SUMMARY",\
+      "name": "Return summary"\
+    \}\
+  ],\
+  "connections": \{\
+    "WEBHOOK": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "PDF_EXTRACTOR",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "PDF_EXTRACTOR": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "LLM_EXTRACT",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "LLM_EXTRACT": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "CREATE_FOLDER",\
+            "type": "main",\
+            "index": 0\
+          \},\
+          \{\
+            "node": "APPEND_CANDIDATE",\
+            "type": "main",\
+            "index": 0\
+          \},\
+          \{\
+            "node": "GET_JOBS",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "GET_JOBS": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "LOOP_JOBS",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "LOOP_JOBS": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "TAILOR_PROMPT",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "TAILOR_PROMPT": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "SAVE_RESUME",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "SAVE_RESUME": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "UPDATE_SHEET",\
+            "type": "main",\
+            "index": 0\
+          \},\
+          \{\
+            "node": "RETURN_SUMMARY",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \}\
+  \},\
+  "active": false,\
+  "settings": \{\
+    "executionOrder": "v1"\
+  \},\
+  "name": "Job\uc0\u8209 App \'96 Simplified RAG Resume Builder",\
+  "id": "simplified-job-app"\
+\}\
+}
