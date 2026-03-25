@@ -3,6 +3,7 @@ import json
 import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from google.cloud import storage
 import uvicorn
@@ -87,6 +88,10 @@ def startup_event():
             logger.error(f"Failed to load model from {model_path}: {e}")
     else:
         logger.warning("No model found on startup. API will return 503 for predictions until model is available.")
+
+@app.get("/")
+def read_root():
+    return RedirectResponse(url="/docs")
 
 @app.get("/health")
 def health_check():
