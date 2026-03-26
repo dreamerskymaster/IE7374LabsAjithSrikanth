@@ -179,6 +179,9 @@ def run(model_name, tracker=None, context_id=None, features_artifact_id=None):
             mlflow.log_artifact(str(fi_json_path))
 
         # 4. Model
+        import joblib
+        joblib.dump(model, RESULTS_DIR / f"{model_name}_model.pkl")
+        
         if model_name == "XGBoost":
             mlflow.xgboost.log_model(model, "model")
         elif model_name == "LightGBM":

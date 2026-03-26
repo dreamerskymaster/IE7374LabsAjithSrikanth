@@ -1,11 +1,13 @@
 import os
 import json
+import shutil
 import mlflow
+from google.cloud import storage
 from datetime import datetime
 from src.utils import (
     get_logger, log_stage, log_dict_table,
     DATA_DIR, RESULTS_DIR, MLFLOW_EXPERIMENT_NAME, MLFLOW_TRACKING_URI,
-    MLFLOW_REGISTRY_MODEL, save_metadata
+    MLFLOW_REGISTRY_MODEL, save_metadata, GCS_BUCKET
 )
 
 logger = get_logger(__name__)
@@ -50,6 +52,23 @@ def run_evaluate(tracker=None, context_id=None):
     if runner_up:
         margin = champion['metrics']['f1_weighted'] - runner_up['metrics']['f1_weighted']
         logger.info(f"🥈 RUNNER-UP: {runner_up['model_name']} (Margin: {margin:.4f})")
+
+    # Save and upload champion model to GCS for Cloud Run
+    champion_pkl_path = RESULTS_DIR / f"{champion['model_name']}_model.pkl"
+    final_champion_path = RESULTS_DIR / "champion_model.pkl"
+    if champion_pkl_path.exists():
+        shutil.copy(champion_pkl_path, final_champion_path)
+        logger.info(f"Saved champion model locally to {final_champion_path}")
+        
+        if GCS_BUCKET:
+            try:
+                client = storage.Client()
+                bucket = client.bucket(GCS_BUCKET)
+                blob = bucket.blob("models/champion_model.pkl")
+                blob.upload_from_filename(str(final_champion_path))
+                logger.info(f"Uploaded champion model to gs://{GCS_BUCKET}/models/champion_model.pkl")
+            except Exception as e:
+                logger.error(f"Failed to upload champion model to GCS: {e}")
 
     # Save comparison summary
     summary_path = RESULTS_DIR / "model_comparison_summary.json"
