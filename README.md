@@ -54,7 +54,8 @@ This repository serves as a comprehensive portfolio of laboratory assignments fo
 - **Data Profiling**: TensorFlow Data Validation (TFDV) for auto-schema generation and anomaly detection.
 - **Lineage Tracking**: Google ML Metadata (MLMD) with a custom interactive dashboard visualization.
 - **Advanced Tuning**: Extended hyperparameter grid searching via `GridSearchCV`.
-- **Cloud Deployment**: Serverless prediction API on GCP Cloud Run with zero-cost tier configuration.
+- **Cloud Deployment**: Serverless API on GCP Cloud Run seamlessly downloading champion models from GCS.
+- **User Interface**: Integrated responsive dark-themed HTML dashboard for live, zero-setup browser-based model testing.
 
 ---
 

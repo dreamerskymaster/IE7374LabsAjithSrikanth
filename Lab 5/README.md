@@ -14,7 +14,8 @@ This project builds upon Lab 4 by extending the CNC manufacturing defect detecti
 2. **ML Metadata (MLMD)** for full artifact and execution lineage tracking across the pipeline.
 3. **Advanced Hyperparameter Tuning** using `GridSearchCV` across robust parameter grids for all models.
 4. **GCP Deployment** using Cloud Storage (GCS) for artifacts, Artifact Registry for Docker images, and Cloud Run for serverless model serving (staying under the free tier budget of $5).
-5. **Interactive Lineage Dashboard** to visualize the complete lifecycle of ML artifacts and executions.
+5. **Custom Web Interface** injected directly into the Cloud Run root endpoint (`/`) for instant, interactive browser-based defect simulation testing.
+6. **Interactive Lineage Dashboard** to visualize the complete lifecycle of ML artifacts and executions.
 
 ## Architecture
 
@@ -78,7 +79,7 @@ To deploy the winning model as a serverless API on Cloud Run:
    This script will create a GCS bucket, an Artifact Registry repository, build the lightweight `Dockerfile.serve` image, push it, and deploy it to Cloud Run (`min-instances=0` to stay free).
 
 3. **Make Predictions**:
-   Use the Cloud Run URL outputted by the script to send POST requests to `/predict`.
+   Open the Cloud Run URL outputted by the script in your web browser. You will be greeted by the **CNC Defect Oracle** UI. Click the `🎲 Randomize Data` button to generate realistic sensor readings, and `🚀 Run Prediction` to get instantaneous evaluation from the champion model!
 
 4. **Cleanup**:
    To avoid any accidental charges, run:
