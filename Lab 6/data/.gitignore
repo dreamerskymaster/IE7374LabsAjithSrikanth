@@ -1,0 +1,3 @@
+# Ignore tracked data contents; DVC manages versions
+*
+!.gitignore

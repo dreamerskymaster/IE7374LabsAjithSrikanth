@@ -1,0 +1,3 @@
+# Ignore model artifacts in Git; DVC manages versions
+*
+!.gitignore

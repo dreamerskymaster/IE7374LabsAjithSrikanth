@@ -1,0 +1,5 @@
+[core]
+    no_scm = True
+    remote = gcs-remote
+['remote "gcs-remote"']
+    url = gs://lab6-dvc-ajith/dvc-store

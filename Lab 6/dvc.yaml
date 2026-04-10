@@ -1,0 +1,37 @@
+stages:
+  generate:
+    cmd: python -m src.data_generator --num-records 5000
+    outs:
+      - data/raw/cnc_sensor_data.csv
+
+  label:
+    cmd: python -m src.data_labeler
+    deps:
+      - data/raw/cnc_sensor_data.csv
+      - src/data_labeler.py
+    outs:
+      - data/labeled/cnc_labeled.csv
+
+  featurize:
+    cmd: python -m src.feature_engineering
+    deps:
+      - data/labeled/cnc_labeled.csv
+      - src/feature_engineering.py
+      - src/utils.py
+    outs:
+      - data/processed/cnc_features.csv
+      - models/feature_scaler.pkl
+
+  train:
+    cmd: python -m src.model_trainer
+    deps:
+      - data/processed/cnc_features.csv
+      - models/feature_scaler.pkl
+      - src/model_trainer.py
+      - src/utils.py
+    outs:
+      - models/champion_model.pkl
+      - models/model_metadata.json
+    metrics:
+      - models/metrics.json:
+          cache: false
