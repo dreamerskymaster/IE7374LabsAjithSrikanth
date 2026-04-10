@@ -3,10 +3,10 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${SCRIPT_DIR}"
 
-PROJECT="ajithmlopsie7374"
-REGION="us-central1"
-BUCKET="lab6-dvc-ajith"
-FUNCTION="cnc-defect-predictor"
+PROJECT="${GCP_PROJECT:-ajithmlopsie7374}"
+REGION="${GCP_REGION:-us-central1}"
+BUCKET="${GCS_BUCKET:-lab6-dvc-ajith}"
+FUNCTION="${GCP_FUNCTION:-cnc-defect-predictor}"
 
 echo "=== Deploying Cloud Function: ${FUNCTION} ==="
 

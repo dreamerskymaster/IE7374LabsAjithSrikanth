@@ -63,9 +63,10 @@ def log_to_bigquery(predictions):
         table_id = f"{PROJECT_ID}.{BQ_DATASET}.prediction_log"
         rows_df = pd.DataFrame(predictions)
         rows_df["timestamp"] = pd.to_datetime(rows_df["timestamp"])
-        client.load_table_from_dataframe(rows_df, table_id).result()
-    except Exception:
-        pass  # Best-effort; do not block response
+        # No .result() here to make it async/non-blocking
+        client.load_table_from_dataframe(rows_df, table_id)
+    except Exception as e:
+        print(f"BigQuery Logging Error: {str(e)}")
 
 
 def make_response(body, status=200):
