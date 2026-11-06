@@ -1,5 +1,10 @@
 # IE7374 - MLOps Laboratory Assignments
 
+[![Launch Video](https://img.shields.io/badge/Launch%20Video-MP4-ff0055?style=for-the-badge&logo=youtube&logoColor=white)](brag-output/brag.mp4)
+
+![Demo](docs/demo.gif)
+
+
 **Student:** Ajith Srikanth  
 **Course:** IE7374 - MLOps  
 **Professor:** Prof. Ramin Mohammadi  
